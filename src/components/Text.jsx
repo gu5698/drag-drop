@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { Tag } from "antd";
 import PropTypes from "prop-types";
 
-const TextComponent = ({ text, onClick, show }) => {
+const TextComponent = ({ text, onClick, id }) => {
   const [isFocused, setIsFocused] = useState(false);
   const textRef = useRef(null);
 
   useEffect(() => {
+    setIsFocused(true);
+
     const handleClickOutside = (event) => {
       if (textRef.current && !textRef.current.contains(event.target)) {
         setIsFocused(false);
@@ -21,8 +23,7 @@ const TextComponent = ({ text, onClick, show }) => {
 
   const handleClick = (e) => {
     e.stopPropagation(); // 阻止事件冒泡
-    setIsFocused(true);
-    if (onClick) onClick(e);
+    if (onClick) onClick(id);
   };
 
   return (

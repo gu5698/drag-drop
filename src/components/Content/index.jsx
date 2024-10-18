@@ -1,20 +1,16 @@
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Layout, theme } from "antd";
 const { Content } = Layout;
 import { useDrop } from "react-dnd";
 import "./Content.css";
-import ImageComponent from "../Image.jsx";
-import { useDrag } from "react-dnd";
+import BoxComponent from "../Box.jsx";
 
 const ContentComponent = ({
-  width,
-  setWidth,
-  height,
-  setHeight,
-  url,
-  setUrl,
   boxes,
   setBoxes,
+  selectedBoxId,
+  setSelectedBoxId,
+  onBoxClick,
 }) => {
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -26,26 +22,27 @@ const ContentComponent = ({
     WIDGET: "widget",
   };
 
-  const [{ canDrop, isOverCurrent }, drop] = useDrop({
+  const [hovering, setHovering] = useState(false);
+
+  const [, drop] = useDrop({
     accept: [ItemTypes.TOOL, ItemTypes.ITEM, ItemTypes.WIDGET],
-    canDrop: () => true,
-    drop: (item) => {
-      if (isOverCurrent) {
-        setBoxes([
-          ...boxes,
-          {
-            ...item,
-            name: {
-              ...item.name,
-              key: boxes.length,
-            },
-          },
-        ]);
-      }
+    hover: (item, monitor) => {
+      if (!monitor.isOver({ shallow: true })) return;
+      setHovering(true);
+    },
+    drop: (item, monitor) => {
+      const offset = monitor.getClientOffset();
+      const newBox = {
+        ...item,
+        id: Date.now().toString(),
+        left: offset.x,
+        top: offset.y,
+      };
+      setBoxes((prevBoxes) => [...prevBoxes, newBox]);
+      setHovering(false);
     },
     collect: (monitor) => ({
-      canDrop: monitor.canDrop(),
-      isOverCurrent: monitor.isOver({ shallow: true }),
+      isOver: !!monitor.isOver({ shallow: true }),
     }),
   });
 
@@ -53,7 +50,6 @@ const ContentComponent = ({
     <Content
       style={{
         margin: "16px",
-        // minHeight: "100vh",
       }}
     >
       <div
@@ -65,11 +61,17 @@ const ContentComponent = ({
           borderRadius: borderRadiusLG,
         }}
       >
-        {boxes?.map((box, index) => (
-          <div key={index}>{box.name}</div>
-        ))}
-        <div className={`drop-area ${canDrop ? "highlight" : ""}`} ref={drop}>
-          {/* Drag here */}
+        <div ref={drop} className={`drop-zone`} style={{ minHeight: "90vh" }}>
+          {boxes.map((box) => (
+            <BoxComponent
+              key={box.id}
+              box={box}
+              isSelected={box.id === selectedBoxId}
+              // onClick={() => setSelectedBoxId(box.id)}
+              onClick={onBoxClick}
+            />
+          ))}
+          {hovering && <div className={`drop-overlay`}></div>}
         </div>
       </div>
     </Content>

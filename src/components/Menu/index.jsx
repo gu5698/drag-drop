@@ -1,34 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { Menu } from "antd";
+import React from "react";
+import { Menu, Button } from "antd";
 import { useDrag } from "react-dnd";
-import { Flex, Input } from "antd";
-import ImageComponent from "../Image";
-import TextComponent from "../Text";
+import PropertyEditor from "../PropertyEditor";
 
-const getItem = (label, key, children, icon) => {
-  return {
-    label,
-    key,
-    children,
-    // icon,
-  };
-};
 const TOOL = "tool";
 
-const createDraggableItem = (content, label, type, key) => {
-  const [{ isDragging }, drag] = useDrag({
+const createDraggableItem = (type, label, initialProps) => {
+  const [, drag] = useDrag({
     type: TOOL,
     item: {
       type: type,
-      name: content,
+      ...initialProps,
     },
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
   });
 
   return {
-    key,
+    key: type,
     label: (
       <div className="tool" ref={drag}>
         {label}
@@ -38,138 +25,50 @@ const createDraggableItem = (content, label, type, key) => {
 };
 
 const MenuComponent = ({
-  text,
-  setText,
-  width,
-  setWidth,
-  height,
-  setHeight,
-  url,
-  setUrl,
-  // createDraggableItem,
   boxes,
   setBoxes,
-  tool,
-  setTool,
-  item,
-  setItem,
+  selectedBoxId,
+  setSelectedBoxId,
 }) => {
-  const reset = () => {
-    setTool(false);
-    setItem(false);
-  };
-  const onClick = (e) => {
-    // reset();
-    setItem(false);
-    setTool((prev) => !prev);
-  };
-  const onClick1 = (e) => {
-    // reset();
-    setTool(false);
-    setItem((prev) => !prev);
-  };
-
-  const items1 = [
-    createDraggableItem(
-      <ImageComponent
-        src={url}
-        alt="Dropped"
-        width={width}
-        height={height}
-        onClick={onClick}
-        show={tool}
-      />,
-      "圖片元件",
-      "tool",
-      "1"
-    ),
-    createDraggableItem(
-      <TextComponent
-        // src={url}
-        text={text}
-        // alt="Dropped"
-        // width={width}
-        // height={height}
-        onClick={onClick1}
-        show={item}
-      />,
-      "文字元件",
-      "item",
-      "2"
-    ),
-    createDraggableItem("carousel", "輪播元件", "3"),
+  const items = [
+    createDraggableItem("image", "圖片元件", {
+      width: "300px",
+      height: "300px",
+      url: "https://picsum.photos/id/1/300/300",
+      src: "https://picsum.photos/id/1/300/300",
+      alt: "image",
+    }),
+    createDraggableItem("text", "文字元件", { text: "Hello from Meepshop!" }),
+    createDraggableItem("carousel", "輪播圖元件", {
+      width: "300px",
+      height: "400px",
+      images: [
+        "https://picsum.photos/id/1/300/200",
+        "https://picsum.photos/id/2/300/200",
+        "https://picsum.photos/id/3/300/200",
+      ],
+    }),
   ];
 
-  useEffect(() => {
+  const handlePropertyChange = (property, value) => {
     setBoxes(
-      boxes?.map((d) =>
-        d.type === "tool"
-          ? {
-              ...d,
-              name: (
-                <ImageComponent
-                  src={url}
-                  alt="Dropped"
-                  width={width}
-                  height={height}
-                  onClick={onClick}
-                  show={tool}
-                />
-              ),
-            }
-          : d.type === "item"
-          ? {
-              ...d,
-              name: (
-                <TextComponent text={text} onClick={onClick1} show={item} />
-              ),
-            }
-          : d
+      boxes.map((box) =>
+        box.id === selectedBoxId ? { ...box, [property]: value } : box
       )
     );
-  }, [width, height, url, text, tool, item]);
+  };
+
+  const selectedBox = boxes.find((box) => box.id === selectedBoxId);
 
   return (
     <>
-      {tool ? (
-        <Flex vertical gap={12}>
-          <Input
-            placeholder="width"
-            value={width}
-            onChange={(e) => {
-              setWidth(e.target.value);
-            }}
-          />
-          <Input
-            placeholder="height"
-            value={height}
-            onChange={(e) => {
-              setHeight(e.target.value);
-            }}
-          />
-          <Input
-            placeholder="url"
-            value={url}
-            onChange={(e) => {
-              setUrl(e.target.value);
-            }}
-          />
-        </Flex>
-      ) : item ? (
-        <Input
-          placeholder="text"
-          value={text}
-          onChange={(e) => {
-            setText(e.target.value);
-          }}
+      {selectedBox ? (
+        <PropertyEditor
+          box={selectedBox}
+          onPropertyChange={handlePropertyChange}
         />
       ) : (
-        <Menu
-          theme="dark"
-          // defaultSelectedKeys={["1"]}
-          mode="inline"
-          items={items1}
-        />
+        <Menu items={items} />
       )}
     </>
   );

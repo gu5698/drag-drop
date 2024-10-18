@@ -2,13 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { Tag } from "antd";
 import PropTypes from "prop-types";
 
-const ImageComponent = ({ src, alt, width, height, onClick, show }) => {
+const ImageComponent = ({ src, alt, width, height, onClick, show, id }) => {
   const [isFocused, setIsFocused] = useState(false);
   const imageRef = useRef(null);
-
-  //   useEffect(() => {
-  //     console.log("isFocused", isFocused);
-  //   }, [isFocused]);
 
   useEffect(() => {
     setIsFocused(true);
@@ -27,15 +23,17 @@ const ImageComponent = ({ src, alt, width, height, onClick, show }) => {
     };
   }, []);
 
-  //   const handleFocus = () => setIsFocused(true);
+  const handleClick = (e) => {
+    e.stopPropagation(); // 阻止事件冒泡
+    onClick(id);
+  };
 
   return (
     <div
       ref={imageRef}
       className={`image ${isFocused ? "focused" : ""}`}
       tabIndex={0}
-      //   onFocus={handleFocus}
-      onClick={onClick}
+      onClick={handleClick}
     >
       <Tag className="tag" color="green">
         圖片元件

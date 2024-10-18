@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Layout, theme } from "antd";
 const { Header, Content, Footer, Sider } = Layout;
 import MenuComponent from "./components/Menu";
@@ -7,54 +7,59 @@ import "./App.css";
 
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [width, setWidth] = useState("300px");
-  const [height, setHeight] = useState("300px");
-  const [url, setUrl] = useState("https://picsum.photos/id/1/300/300");
   const [boxes, setBoxes] = useState([]);
-  const [tool, setTool] = useState(false);
-  const [item, setItem] = useState(false);
-  const [text, setText] = useState("Hello from Meepshop!");
+  const [selectedBoxId, setSelectedBoxId] = useState(null);
 
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  const handleBackToMenu = useCallback((e) => {
+    // 檢查點擊是否發生在 Sider 內或者是 BoxComponent
+    if (
+      !e.target.closest(".ant-layout-sider") &&
+      !e.target.closest(".box-component")
+    ) {
+      setSelectedBoxId(null);
+    }
+  }, []);
+
+  const handleBoxClick = useCallback((boxId) => {
+    setSelectedBoxId((prevId) => (prevId === boxId ? null : boxId));
+  }, []);
+
+  useEffect(() => {
+    // 在整個 document 上添加點擊事件監聽器
+    document.addEventListener("click", handleBackToMenu);
+
+    // 清理函數
+    return () => {
+      document.removeEventListener("click", handleBackToMenu);
+    };
+  }, [handleBackToMenu]);
 
   return (
     <Layout hasSider>
       <Sider>
         <div className="demo-logo-vertical" />
         <MenuComponent
-          text={text}
-          setText={setText}
-          width={width}
-          setWidth={setWidth}
-          height={height}
-          setHeight={setHeight}
-          url={url}
-          setUrl={setUrl}
           boxes={boxes}
           setBoxes={setBoxes}
-          tool={tool}
-          setTool={setTool}
-          item={item}
-          setItem={setItem}
+          selectedBoxId={selectedBoxId}
+          setSelectedBoxId={setSelectedBoxId}
         />
       </Sider>
-      <Layout style={{ marginLeft: collapsed ? 80 : 200 }}>
+      <Layout
+        className="context-area"
+        style={{ marginLeft: collapsed ? 80 : 200, position: "relative" }}
+      >
         <Header style={{ padding: 0, background: colorBgContainer }} />
         <ContentComponent
-          width={width}
-          setWidth={setWidth}
-          height={height}
-          setHeight={setHeight}
-          url={url}
-          setUrl={setUrl}
           boxes={boxes}
           setBoxes={setBoxes}
-          tool={tool}
-          setTool={setTool}
-          item={item}
-          setItem={setItem}
+          selectedBoxId={selectedBoxId}
+          setSelectedBoxId={setSelectedBoxId}
+          onBoxClick={handleBoxClick}
         />
         <Footer />
       </Layout>
