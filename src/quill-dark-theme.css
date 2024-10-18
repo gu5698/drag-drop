@@ -1,0 +1,38 @@
+/* quill-dark-theme.css */
+.quill-dark .ql-toolbar {
+    background-color: #2c2c2c;
+    border-color: #444;
+  }
+  
+  .quill-dark .ql-container {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border-color: #444;
+  }
+  
+  .quill-dark .ql-editor {
+    color: #e0e0e0;
+  }
+  
+  .quill-dark .ql-picker {
+    color: #e0e0e0;
+  }
+  
+  .quill-dark .ql-stroke {
+    stroke: #e0e0e0;
+  }
+  
+  .quill-dark .ql-fill {
+    fill: #e0e0e0;
+  }
+  
+  .quill-dark .ql-picker-options {
+    background-color: #2c2c2c;
+  }
+  
+  .quill-dark .ql-tooltip {
+    background-color: #2c2c2c;
+    color: #e0e0e0;
+  }
+  
+  /* 可以根據需要添加更多樣式 */

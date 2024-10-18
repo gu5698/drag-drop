@@ -40,7 +40,7 @@ const App = () => {
 
   return (
     <Layout hasSider>
-      <Sider>
+      <Sider width={400} style={{ padding: "8px" }}>
         <div className="demo-logo-vertical" />
         <MenuComponent
           boxes={boxes}
@@ -51,7 +51,7 @@ const App = () => {
       </Sider>
       <Layout
         className="context-area"
-        style={{ marginLeft: collapsed ? 80 : 200, position: "relative" }}
+        style={{ marginLeft: collapsed ? 80 : 400, position: "relative" }}
       >
         <Header style={{ padding: 0, background: colorBgContainer }} />
         <ContentComponent

@@ -1,5 +1,6 @@
 import React from "react";
-import { Input, InputNumber, Button } from "antd";
+import { Input, Button, Flex } from "antd";
+import ReactQuill from "react-quill";
 
 const PropertyEditor = ({ box, onPropertyChange }) => {
   if (!box) return null;
@@ -10,8 +11,10 @@ const PropertyEditor = ({ box, onPropertyChange }) => {
     onPropertyChange("images", newImages);
   };
 
+  const defaultImg = "https://picsum.photos/id/1/300/300";
+
   const addImage = () => {
-    onPropertyChange("images", [...box.images, box.images[0]]);
+    onPropertyChange("images", [...box.images, defaultImg]);
   };
 
   const removeImage = (index) => {
@@ -22,81 +25,86 @@ const PropertyEditor = ({ box, onPropertyChange }) => {
   switch (box.type) {
     case "image":
       return (
-        <div>
-          <h3>圖片屬性</h3>
-          <div>
-            <label>寬度：</label>
-            <InputNumber
-              value={parseInt(box.width)}
-              onChange={(value) => onPropertyChange("width", `${value}px`)}
-              min={1}
-            />
-          </div>
-          <div>
-            <label>高度：</label>
-            <InputNumber
-              value={parseInt(box.height)}
-              onChange={(value) => onPropertyChange("height", `${value}px`)}
-              min={1}
-            />
-          </div>
-          <div>
-            <label>URL：</label>
-            <Input
-              value={box.src}
-              onChange={(e) => onPropertyChange("src", e.target.value)}
-            />
-          </div>
-        </div>
+        <Flex vertical gap="middle">
+          <Input
+            placeholder="width"
+            value={box.width}
+            onChange={(e) => onPropertyChange("width", e.target.value)}
+          />
+          <Input
+            placeholder="height"
+            value={box.height}
+            onChange={(e) => onPropertyChange("height", e.target.value)}
+          />
+          <Input
+            placeholder="URL"
+            value={box.src}
+            onChange={(e) => onPropertyChange("src", e.target.value)}
+          />
+        </Flex>
       );
     case "text":
       return (
-        <div>
-          <h3>文字屬性</h3>
-          <div>
-            <label>文字：</label>
-            <Input
-              value={box.text}
-              onChange={(e) => onPropertyChange("text", e.target.value)}
-            />
-          </div>
-          {/* 可以添加更多文字相關的屬性，如字體大小、顏色等 */}
-        </div>
+        <Flex vertical gap="middle">
+          <Input
+            placeholder="width"
+            value={box.width}
+            onChange={(e) => onPropertyChange("width", e.target.value)}
+          />
+          <Input
+            placeholder="height"
+            value={box.height}
+            onChange={(e) => onPropertyChange("height", e.target.value)}
+          />
+          <ReactQuill
+            theme="snow"
+            className="quill-dark"
+            value={box.text}
+            onChange={(content) => onPropertyChange("text", content)}
+            modules={{
+              toolbar: [
+                [{ header: [1, 2, false] }],
+                ["bold", "italic", "underline", "strike", "blockquote"],
+                [
+                  { list: "ordered" },
+                  { list: "bullet" },
+                  { indent: "-1" },
+                  { indent: "+1" },
+                ],
+                ["link", "image"],
+                ["clean"],
+              ],
+            }}
+          />
+        </Flex>
       );
     case "carousel":
       return (
-        <div>
-          <h3>輪播圖屬性</h3>
-          <div>
-            <label>寬度：</label>
-            <InputNumber
-              value={parseInt(box.width)}
-              onChange={(value) => onPropertyChange("width", `${value}px`)}
-              min={1}
-            />
-          </div>
-          <div>
-            <label>高度：</label>
-            <InputNumber
-              value={parseInt(box.height)}
-              onChange={(value) => onPropertyChange("height", `${value}px`)}
-              min={1}
-            />
-          </div>
-          <div>
-            <h4>圖片：</h4>
-            {box.images.map((image, index) => (
-              <div key={index}>
-                <Input
-                  value={image}
-                  onChange={(e) => handleImageChange(index, e.target.value)}
-                />
-                <Button onClick={() => removeImage(index)}>移除</Button>
-              </div>
-            ))}
-            <Button onClick={addImage}>添加圖片</Button>
-          </div>
-        </div>
+        <Flex vertical gap="middle">
+          <Input
+            placeholder="width"
+            value={box.width}
+            onChange={(e) => onPropertyChange("width", e.target.value)}
+          />
+          <Input
+            placeholder="height"
+            value={box.height}
+            onChange={(e) => onPropertyChange("height", e.target.value)}
+          />
+          <br></br>
+          {box.images.map((image, index) => (
+            <div key={index}>
+              <Input
+                placeholder={`slide ${index + 1}`}
+                value={image}
+                onChange={(e) => handleImageChange(index, e.target.value)}
+                allowClear
+                onClear={(e) => removeImage(index)}
+              />
+            </div>
+          ))}
+          <Button onClick={addImage}>添加圖片</Button>
+        </Flex>
       );
     default:
       return null;

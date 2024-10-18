@@ -1,50 +1,23 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Tag } from "antd";
+import React from "react";
 import PropTypes from "prop-types";
+import DOMPurify from "dompurify";
 
-const TextComponent = ({ text, onClick, id }) => {
-  const [isFocused, setIsFocused] = useState(false);
-  const textRef = useRef(null);
-
-  useEffect(() => {
-    setIsFocused(true);
-
-    const handleClickOutside = (event) => {
-      if (textRef.current && !textRef.current.contains(event.target)) {
-        setIsFocused(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const handleClick = (e) => {
-    e.stopPropagation(); // 阻止事件冒泡
-    if (onClick) onClick(id);
-  };
+const TextComponent = ({ text, width = "auto", height = "auto" }) => {
+  // 使用 DOMPurify 清理 HTML 以防止 XSS 攻擊
+  const cleanHtml = DOMPurify.sanitize(text);
 
   return (
     <div
-      ref={textRef}
-      className={`text ${isFocused ? "focused" : ""}`}
-      tabIndex={0}
-      onClick={handleClick}
-    >
-      <Tag className="tag" color="green">
-        文字元件
-      </Tag>
-      <p>{text}</p>
-    </div>
+      style={{ width, height, overflow: "auto" }}
+      dangerouslySetInnerHTML={{ __html: cleanHtml }}
+    />
   );
 };
 
 TextComponent.propTypes = {
   text: PropTypes.string.isRequired,
-  onClick: PropTypes.func,
-  show: PropTypes.bool,
+  width: PropTypes.string,
+  height: PropTypes.string,
 };
 
 export default TextComponent;

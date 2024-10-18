@@ -9,7 +9,8 @@ const createDraggableItem = (type, label, initialProps) => {
   const [, drag] = useDrag({
     type: TOOL,
     item: {
-      type: type,
+      type,
+      label,
       ...initialProps,
     },
   });
@@ -34,18 +35,20 @@ const MenuComponent = ({
     createDraggableItem("image", "圖片元件", {
       width: "300px",
       height: "300px",
-      url: "https://picsum.photos/id/1/300/300",
       src: "https://picsum.photos/id/1/300/300",
-      alt: "image",
     }),
-    createDraggableItem("text", "文字元件", { text: "Hello from Meepshop!" }),
-    createDraggableItem("carousel", "輪播圖元件", {
+    createDraggableItem("text", "文字元件", {
       width: "300px",
-      height: "400px",
+      height: "300px",
+      text: "Hello from Meepshop!",
+    }),
+    createDraggableItem("carousel", "輪播圖元件", {
+      width: "300",
+      height: "300",
       images: [
-        "https://picsum.photos/id/1/300/200",
-        "https://picsum.photos/id/2/300/200",
-        "https://picsum.photos/id/3/300/200",
+        "https://picsum.photos/id/1/300/300",
+        "https://picsum.photos/id/2/300/300",
+        "https://picsum.photos/id/3/300/300",
       ],
     }),
   ];
@@ -68,7 +71,7 @@ const MenuComponent = ({
           onPropertyChange={handlePropertyChange}
         />
       ) : (
-        <Menu items={items} />
+        <Menu theme="dark" mode="inline" items={items} selectable={false} />
       )}
     </>
   );

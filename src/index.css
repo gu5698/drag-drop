@@ -1,3 +1,6 @@
+@import 'react-quill/dist/quill.snow.css';
+@import './quill-dark-theme.css';
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -21,6 +24,7 @@ body {
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .focused {
@@ -61,4 +65,8 @@ body {
 .slick-slide > div:first-child,
 .slide {
   height: 100% !important;
+}
+
+.ant-flex {
+  width: 100%;
 }
