@@ -1,8 +1,35 @@
-# React + Vite
+<h1>drag-drop</h1>
+</div>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 预览
 
-Currently, two official plugins are available:
+- [drag-drop](https://codesandbox.io/p/github/gu5698/drag-drop/) - 完整版 codesandbox 站点
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 安装和使用
+
+- 获取代码
+
+```bash
+git clone https://github.com/gu5698/drag-drop.git
+```
+
+- 安装依赖
+
+```bash
+cd drag-drop
+
+yarn install
+
+```
+
+- 运行
+
+```bash
+yarn run dev
+```
+
+- 打包
+
+```bash
+yarn run build
+```
